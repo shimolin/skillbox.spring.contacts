@@ -1,4 +1,4 @@
-package org.example;
+package org.example.contactsmanager;
 
 public class Contact {
     private String fullName;

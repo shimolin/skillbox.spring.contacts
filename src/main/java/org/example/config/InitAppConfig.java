@@ -1,7 +1,7 @@
 package org.example.config;
 
-import org.example.DataLoadInit;
-import org.example.DataLoad;
+import org.example.dataload.DataLoadInit;
+import org.example.dataload.DataLoad;
 import org.springframework.context.annotation.*;
 
 @Configuration

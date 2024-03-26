@@ -1,38 +1,34 @@
 package org.example;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.example.command.Command;
+import org.example.command.CommandType;
+import org.example.contactsmanager.ContactsManager;
+import org.example.dataload.DataLoad;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
 public class Application {
-
-    @Value("${app.fullNameRegex}")
-    private String fullNameRegex;
-    @Value("${app.phoneRegex}")
-    private String phoneRegex;
-    @Value("${app.emailRegex}")
-    private String emailRegex;
-    @Value("${app.filenameRegex}")
-    private String filenameRegex;
-
     private final ContactsManager contactsManager;
     private final DataLoad dataLoad;
 
-    public Application(ContactsManager contactsManager, DataLoad loadData) {
+    private final Command command;
+
+    public Application(ContactsManager contactsManager, DataLoad loadData, Command command) {
         this.contactsManager = contactsManager;
         this.dataLoad = loadData;
+        this.command = command;
     }
 
     public void run(){
         dataLoad.load(contactsManager);
         printMenu();
-        Command command;
         do {
             boolean result;
             System.out.print("-> ");
-            command = getCommand();
+            String input = (new Scanner(System.in)).nextLine();
+            command.commandParse(input);
             switch (command.getCommandType()){
                 case ADD :
                     String[] params = command.getParameter().split(";");
@@ -55,49 +51,6 @@ public class Application {
                     break;
             }
         } while (command.getCommandType() != CommandType.EXIT);
-    }
-
-    public Command getCommand() {
-        String input = (new Scanner(System.in)).nextLine();
-
-        String command;
-        String param = null;
-
-        int i = input.indexOf(" ");
-        if (i < 0) {
-            command = input;
-        } else {
-            command = input.substring(0, i);
-            param = input.substring(i + 1);
-        }
-
-        switch (command.toUpperCase()) {
-            case "ADD" -> {
-                String[] params = param.split(";");
-                if (params.length == 3) {
-                    if (params[0].strip().matches(fullNameRegex) && params[1].strip().matches(phoneRegex) && params[2].strip().matches(emailRegex)) {
-                        return new Command(CommandType.ADD, param);
-                    }
-                } else return new Command(CommandType.ERROR, null);
-            }
-            case "DELETE" ->{
-                if (param.matches(emailRegex)) {
-                    return new Command(CommandType.DELETE, param);
-                } else return new Command(CommandType.ERROR, null);
-            }
-            case "SAVE" ->{
-                if (param.matches(filenameRegex)) {
-                    return new Command(CommandType.SAVE, param);
-                } else return new Command(CommandType.ERROR, null);
-            }
-            case "PRINT" -> {
-                return new Command(CommandType.PRINT, null);
-            }
-            case "EXIT" ->{
-                return new Command(CommandType.EXIT, null);
-            }
-        }
-        return new Command(CommandType.ERROR, null);
     }
 
     private void printMenu() {

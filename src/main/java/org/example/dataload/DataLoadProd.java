@@ -1,5 +1,6 @@
-package org.example;
+package org.example.dataload;
 
+import org.example.contactsmanager.ContactsManager;
 import org.springframework.context.annotation.Profile;
 
 @Profile("prod")

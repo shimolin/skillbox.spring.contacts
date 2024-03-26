@@ -1,5 +1,6 @@
-package org.example;
+package org.example.dataload;
 
+import org.example.contactsmanager.ContactsManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 
@@ -16,7 +17,6 @@ public class DataLoadInit implements DataLoad {
     private String phoneRegex;
     @Value("${app.emailRegex}")
     private String emailRegex;
-
     @Value("${app.contactsfilename}")
     private String filename;
 
